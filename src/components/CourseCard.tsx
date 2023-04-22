@@ -12,6 +12,7 @@ import {
   Rating,
 } from "@mantine/core";
 import { useState } from "react";
+import { ConvertRaitingsPepole } from "~/utils/helper";
 
 const useStyles = createStyles((theme, { like }: { like: boolean }) => ({
   card: {
@@ -46,11 +47,13 @@ interface CourseCardProps {
   title: string;
   topic: string;
   author: string;
+  raiting: number;
+  raiting_pepole: number;
   imagesrc: string;
   badges: string[];
 }
 
-export function CourseCard({ title, author, topic, imagesrc, badges }: CourseCardProps) {
+export function CourseCard({ title, author, topic, raiting, raiting_pepole, imagesrc, badges }: CourseCardProps) {
   const [like, Setlike] = useState(false);
   const { classes } = useStyles({ like });
 
@@ -68,7 +71,6 @@ export function CourseCard({ title, author, topic, imagesrc, badges }: CourseCar
     "orange",
   ];
   const features = badges.map((badge, index) => {
-    const colorindex = Math.floor(Math.random() * colorList.length);
     return (
       <Badge color={colorList[index]} key={badge}>
         {badge}
@@ -93,9 +95,9 @@ export function CourseCard({ title, author, topic, imagesrc, badges }: CourseCar
           {author}
         </Text>
         <Group position="left" spacing="xs">
-          <Text fz="sm">4</Text>
-          <Rating value={4} fractions={2} readOnly />
-          <Text fz="sm">(120)</Text>
+          <Text fz="sm">{raiting}</Text>
+          <Rating value={raiting} fractions={3} readOnly />
+          <Text fz="sm">({ ConvertRaitingsPepole(raiting_pepole) })</Text>
         </Group>
       </Card.Section>
 

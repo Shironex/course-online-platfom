@@ -20,8 +20,6 @@ import {
   IconMessage,
   IconSettings,
   IconPlayerPause,
-  IconTrash,
-  IconSwitchHorizontal,
   IconChevronDown,
 } from "@tabler/icons-react";
 import Link from "next/link";

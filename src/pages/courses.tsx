@@ -1,11 +1,14 @@
 import { type NextPage } from "next";
 import Head from "next/head";
 import { CourseCard } from "~/components/CourseCard";
-import { Flex, Grid, createStyles } from "@mantine/core";
+import { Flex, createStyles } from "@mantine/core";
 
-const useStyles = createStyles((theme) => ({
+const useStyles = createStyles(() => ({
   wrapper: {
     padding: 25,
+    width: "100%",
+    height: "100%",
+    overflow: "hidden"
   },
 }));
 
@@ -15,6 +18,8 @@ const coursesList = [
     author: "admin",
     topic: "react",
     imagesrc: "/react.jpg",
+    raiting: 5,
+    raiting_pepole: 32123,
     badges: ["javascript", "html", "css"],
   },
   {
@@ -22,6 +27,8 @@ const coursesList = [
     author: "admin",
     topic: "angular",
     imagesrc: "/angular.jpg",
+    raiting: 1,
+    raiting_pepole: 25,
     badges: ["javascript", "html", "css"],
   },
   {
@@ -29,6 +36,8 @@ const coursesList = [
     author: "admin",
     topic: "vue",
     imagesrc: "/vue.jpg",
+    raiting: 4.5,
+    raiting_pepole: 900,
     badges: ["javascript", "html", "css"],
   },
   {
@@ -36,6 +45,8 @@ const coursesList = [
     author: "admin",
     topic: "svelte",
     imagesrc: "/svelte.jpg",
+    raiting: 4.2,
+    raiting_pepole: 1300,
     badges: ["javascript", "html", "css"],
   },
   {
@@ -43,6 +54,8 @@ const coursesList = [
     author: "admin",
     topic: "node.js",
     imagesrc: "/nodejs.jpg",
+    raiting: 3.8,
+    raiting_pepole: 1200,
     badges: ["javascript"],
   },
   {
@@ -50,10 +63,13 @@ const coursesList = [
     author: "admin",
     topic: "express.js",
     imagesrc: "/expressjs.jpg",
+    raiting: 2.5,
+    raiting_pepole: 150,
     badges: ["javascript"],
   },
 ];
-function courses() {
+
+const Courses: NextPage = () => {
   const { classes } = useStyles();
 
   return (
@@ -75,21 +91,9 @@ function courses() {
               <CourseCard key={course.title} {...course} />
           ))}
         </Flex>
-        {/* <Grid
-          gutter={"xl"}
-          align="flex-start"
-          justify="space-between"
-          sx={{ width: "100%", height: "100%" }}
-        >
-          {coursesList.map((course) => (
-            <Grid.Col span={4} key={course.title}>
-              <CourseCard {...course} />
-            </Grid.Col>
-          ))}
-        </Grid> */}
       </main>
     </>
   );
 }
 
-export default courses;
+export default Courses;
