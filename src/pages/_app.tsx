@@ -8,17 +8,25 @@ import { api } from "~/utils/api";
 import "~/styles/globals.css";
 import { Header } from "~/components/Header";
 
-const MyApp: AppType<{ session: Session | null }> = ({
-  Component,
-  pageProps: { session, ...pageProps },
-}) => {
+const MyApp: AppType<{ session: Session | null }> = ({Component,pageProps: { session, ...pageProps },}) => {
   const user = {
     name: "Admin",
     image: ""
   }
   const tabs = [
-    "Home",
-    "Others"
+    {
+      label: "Home",
+      link: "/"
+    },
+    {
+      label: "Courses",
+      link: "/courses"
+    },
+    {
+      label: "Others",
+      link: "/others"
+    },
+
   ]
   return (
     <MantineProvider
