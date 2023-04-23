@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   createStyles,
   Container,
@@ -16,13 +16,16 @@ import { useDisclosure } from "@mantine/hooks";
 import {
   IconLogout,
   IconHeart,
-  IconStar,
-  IconMessage,
   IconSettings,
-  IconPlayerPause,
   IconChevronDown,
+  IconAdjustmentsCog,
+  IconCertificate,
 } from "@tabler/icons-react";
 import Link from "next/link";
+import { SignedIn, SignedOut, useClerk, useUser } from "@clerk/nextjs";
+import { useRouter } from "next/router";
+import UserProfile from "./ui/UserProfile";
+import RegisterModal from "./ui/RegisterModal";
 
 const useStyles = createStyles((theme) => ({
   header: {
@@ -117,15 +120,19 @@ const useStyles = createStyles((theme) => ({
 }));
 
 interface HeaderTabsProps {
-  user: { name: string; image: string };
   tabs: { label: string; link: string }[];
 }
 
-export function Header({ user, tabs }: HeaderTabsProps) {
+export function Header({ tabs }: HeaderTabsProps) {
   const { classes, theme, cx } = useStyles();
   const [opened, { toggle }] = useDisclosure(false);
+  const [ProfileOpened, ProfileHandler] = useDisclosure(false);
   const [userMenuOpened, setUserMenuOpened] = useState(false);
-  const loggedin = true;
+  const [registerModal, setRegisterModal] = useState(false);
+  const signOut = useClerk().signOut;
+  const router = useRouter();
+  const { user } = useUser();
+
 
   const items = tabs.map((tab) => (
     <Tabs.Tab value={tab.label} key={tab.label}>
@@ -146,7 +153,9 @@ export function Header({ user, tabs }: HeaderTabsProps) {
             className={classes.burger}
             size="sm"
           />
-          <Tabs defaultValue="Home" variant="outline"
+          <Tabs
+            defaultValue="Home"
+            variant="outline"
             classNames={{
               root: classes.tabs,
               tabsList: classes.tabsList,
@@ -155,7 +164,7 @@ export function Header({ user, tabs }: HeaderTabsProps) {
           >
             <Tabs.List>{items}</Tabs.List>
           </Tabs>
-          {loggedin ? (
+          <SignedIn>
             <Menu
               width={260}
               position="bottom-end"
@@ -172,13 +181,13 @@ export function Header({ user, tabs }: HeaderTabsProps) {
                 >
                   <Group spacing={7}>
                     <Avatar
-                      src={user.image}
-                      alt={user.name}
+                      src={user?.profileImageUrl}
+                      alt={user?.username ? user?.username : "user"}
                       radius="xl"
                       size={20}
                     />
                     <Text weight={500} size="sm" sx={{ lineHeight: 1 }} mr={3}>
-                      {user.name}
+                      {user?.username}
                     </Text>
                     <IconChevronDown size={rem(12)} stroke={1.5} />
                   </Group>
@@ -195,56 +204,60 @@ export function Header({ user, tabs }: HeaderTabsProps) {
                     />
                   }
                 >
-                  Liked posts
+                  Liked courses
                 </Menu.Item>
                 <Menu.Item
                   icon={
-                    <IconStar
-                      size="0.9rem"
-                      color={theme.colors.yellow[6]}
-                      stroke={1.5}
-                    />
-                  }
-                >
-                  Saved posts
-                </Menu.Item>
-                <Menu.Item
-                  icon={
-                    <IconMessage
+                    <IconCertificate
                       size="0.9rem"
                       color={theme.colors.blue[6]}
                       stroke={1.5}
                     />
                   }
                 >
-                  Your comments
+                  Bought courses
                 </Menu.Item>
 
                 <Menu.Label>Settings</Menu.Label>
-                <Menu.Item icon={<IconSettings size="0.9rem" stroke={1.5} />}>
+                <Menu.Item
+                  icon={<IconSettings size="0.9rem" stroke={1.5} />}
+                  onClick={ProfileHandler.open}
+                >
                   Account settings
                 </Menu.Item>
+
                 <Menu.Item
-                  icon={<IconPlayerPause size="0.9rem" stroke={1.5} />}
+                  icon={<IconAdjustmentsCog size="0.9rem" stroke={1.5} />}
                 >
-                  Stop subscription
+                  Manage courses
                 </Menu.Item>
                 <Menu.Item
                   color="red"
                   icon={<IconLogout size="0.9rem" stroke={1.5} />}
+                  onClick={() => void signOut()}
                 >
                   Logout
                 </Menu.Item>
               </Menu.Dropdown>
             </Menu>
-          ) : (
+          </SignedIn>
+          <SignedOut>
             <Group position="right">
-              <Button variant="default">Log in</Button>
-              <Button>Sign up</Button>
+              <Button
+                variant="default"
+                onClick={() => void router.push("/sign-in")}
+              >
+                Log in
+              </Button>
+              <Button onClick={() => setRegisterModal(true)}>
+                Sign up
+              </Button>
             </Group>
-          )}
+          </SignedOut>
         </Group>
       </Container>
+      <RegisterModal opened={registerModal} close={() => setRegisterModal(false)} />
+      <UserProfile opened={ProfileOpened} close={ProfileHandler.close} />
     </div>
   );
 }

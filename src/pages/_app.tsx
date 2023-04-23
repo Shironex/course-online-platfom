@@ -1,5 +1,6 @@
 import { type AppType } from "next/app";
 import { MantineProvider } from "@mantine/core";
+import { ClerkProvider } from "@clerk/nextjs";
 
 import { api } from "~/utils/api";
 
@@ -7,10 +8,6 @@ import "~/styles/globals.css";
 import { Header } from "~/components/Header";
 
 const MyApp: AppType = ({ Component, pageProps: { ...pageProps } }) => {
-  const user = {
-    name: "Admin",
-    image: "",
-  };
   const tabs = [
     {
       label: "Home",
@@ -34,8 +31,10 @@ const MyApp: AppType = ({ Component, pageProps: { ...pageProps } }) => {
         colorScheme: "dark",
       }}
     >
-      <Header user={user} tabs={tabs} />
-      <Component {...pageProps} />
+      <ClerkProvider {...pageProps}>
+        <Header tabs={tabs} />
+        <Component {...pageProps} />
+      </ClerkProvider>
     </MantineProvider>
   );
 };

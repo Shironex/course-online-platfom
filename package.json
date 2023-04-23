@@ -11,6 +11,8 @@
     "prisma:push": "npx prisma db push"
   },
   "dependencies": {
+    "@clerk/clerk-sdk-node": "^4.8.6",
+    "@clerk/nextjs": "^4.16.4",
     "@emotion/react": "^11.10.6",
     "@emotion/server": "^11.10.0",
     "@mantine/carousel": "^6.0.8",
