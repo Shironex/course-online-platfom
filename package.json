@@ -1,13 +1,14 @@
 {
-  "name": "course-online-platfom",
+  "name": "course-online-platform",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "build": "next build",
     "dev": "next dev",
-    "postinstall": "prisma generate",
     "lint": "next lint",
-    "start": "next start"
+    "start": "next start",
+    "postinstall": "prisma generate",
+    "prisma:push": "npx prisma db push"
   },
   "dependencies": {
     "@emotion/react": "^11.10.6",
@@ -25,7 +26,6 @@
     "@mantine/prism": "^6.0.8",
     "@mantine/spotlight": "^6.0.8",
     "@mantine/tiptap": "^6.0.8",
-    "@next-auth/prisma-adapter": "^1.0.5",
     "@prisma/client": "^4.11.0",
     "@tabler/icons-react": "^2.17.0",
     "@tanstack/react-query": "^4.28.0",
@@ -39,7 +39,6 @@
     "dayjs": "^1.11.7",
     "embla-carousel-react": "^7.1.0",
     "next": "^13.2.4",
-    "next-auth": "^4.21.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "superjson": "1.12.2",

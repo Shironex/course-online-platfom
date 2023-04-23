@@ -1,6 +1,4 @@
 import { type AppType } from "next/app";
-import { type Session } from "next-auth";
-import { SessionProvider } from "next-auth/react";
 import { MantineProvider } from "@mantine/core";
 
 import { api } from "~/utils/api";
@@ -8,26 +6,25 @@ import { api } from "~/utils/api";
 import "~/styles/globals.css";
 import { Header } from "~/components/Header";
 
-const MyApp: AppType<{ session: Session | null }> = ({Component,pageProps: { session, ...pageProps },}) => {
+const MyApp: AppType = ({ Component, pageProps: { ...pageProps } }) => {
   const user = {
     name: "Admin",
-    image: ""
-  }
+    image: "",
+  };
   const tabs = [
     {
       label: "Home",
-      link: "/"
+      link: "/",
     },
     {
       label: "Courses",
-      link: "/courses"
+      link: "/courses",
     },
     {
       label: "Others",
-      link: "/others"
+      link: "/others",
     },
-
-  ]
+  ];
   return (
     <MantineProvider
       withGlobalStyles
@@ -37,10 +34,8 @@ const MyApp: AppType<{ session: Session | null }> = ({Component,pageProps: { ses
         colorScheme: "dark",
       }}
     >
-      <SessionProvider session={session}>
-        <Header user={user} tabs={tabs} />
-        <Component {...pageProps} />
-      </SessionProvider>
+      <Header user={user} tabs={tabs} />
+      <Component {...pageProps} />
     </MantineProvider>
   );
 };
