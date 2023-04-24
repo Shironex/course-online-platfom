@@ -1,6 +1,16 @@
-import { createTRPCRouter, protectedProcedure, publicProcedure } from "~/server/api/trpc";
+import {
+  createTRPCRouter,
+  protectedProcedure,
+  publicProcedure,
+} from "~/server/api/trpc";
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
+
+const LoginInput = z.object({
+  email: z.string(),
+  password: z.string(),
+})
+
 const UserInput = z.object({
   email: z.string(),
   firstname: z.string(),
@@ -11,15 +21,14 @@ const UserInput = z.object({
 
 export const userRouter = createTRPCRouter({
   list: protectedProcedure.query(async ({ ctx }) => {
-      const users = await ctx.clerk.clients.getClientList();
-      if (users.length > 0) return users;
-      else
+    const users = await ctx.clerk.clients.getClientList();
+    if (users.length > 0) return users;
+    else
       throw new TRPCError({
         code: "NOT_FOUND",
         message: `Error no users found:`,
       });
-    
-    }),
+  }),
   create: publicProcedure.input(UserInput).mutation(async ({ ctx, input }) => {
     try {
       await ctx.clerk.users
@@ -30,8 +39,16 @@ export const userRouter = createTRPCRouter({
           firstName: input.firstname,
           lastName: input.lastname,
         })
-        .then((result) => console.log(result));
-      return { user: input.username };
+        .then(async (result) => {
+          if (result) {
+            await ctx.prisma.user.create({
+              data: {
+                clerkid: result.id
+              }
+            })
+          }
+        });
+      return { code: "sucess" };
     } catch (Error) {
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
@@ -39,9 +56,4 @@ export const userRouter = createTRPCRouter({
       });
     }
   }),
-  // update: protectedProcedure.query(async ({ctx}) => {
-  //   const newuser = await ctx.clerk.users.updateUser(ctx.auth.userId, {
-  //     profileImageID
-  //   })
-  // })
 });

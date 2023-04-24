@@ -13,7 +13,7 @@ import GoogleIcon from "./SocialButtons/GoogleIcon";
 import { IconAt } from "@tabler/icons-react";
 import { useState } from "react";
 import { api } from "~/utils/api";
-
+import { useSignUp, useClerk } from "@clerk/nextjs";
 type tUserProfile = {
   opened: boolean;
   close: () => void;
@@ -21,8 +21,34 @@ type tUserProfile = {
 
 const RegisterModal = ({ opened, close }: tUserProfile) => {
   const [loading, setLoading] = useState(false);
-  const RegisterMutation = api.user.create.useMutation();
-  
+  const { signUp, isLoaded } = useSignUp();
+  const clerk = useClerk();
+  const RegisterMutation = api.user.create.useMutation({
+    onSuccess: () => {
+      form.reset();
+      close();
+    },
+  });
+
+  async function signUpWithGoogle() {
+    if (!isLoaded) return;
+    try {
+      await clerk.client.destroy();
+      await signUp.authenticateWithRedirect({
+        strategy: "oauth_google",
+        redirectUrl: "http://localhost:3000/sso-callback",
+        redirectUrlComplete: "http://localhost:3000/courses",
+      }).then(() => {
+        close();
+        return 
+      }).catch((error) => {
+        console.error("Error authenticating user: ", error);
+      });
+    } catch (error) {
+      console.error("Error signing up user: ", error);
+    }
+  }
+
   const form = useForm({
     initialValues: {
       email: "",
@@ -53,7 +79,6 @@ const RegisterModal = ({ opened, close }: tUserProfile) => {
     },
   });
 
-
   return (
     <Modal
       opened={opened}
@@ -72,6 +97,7 @@ const RegisterModal = ({ opened, close }: tUserProfile) => {
           color="gray"
           radius="xl"
           px={50}
+          onClick={() => void signUpWithGoogle()}
         >
           Google
         </Button>
@@ -83,7 +109,7 @@ const RegisterModal = ({ opened, close }: tUserProfile) => {
         onSubmit={form.onSubmit((values) => {
           setTimeout(() => {
             console.log(values);
-            RegisterMutation.mutate({...values})
+            RegisterMutation.mutate({ ...values });
             setLoading(false);
           }, 1500);
         })}

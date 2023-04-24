@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   createStyles,
   Container,
@@ -23,9 +23,9 @@ import {
 } from "@tabler/icons-react";
 import Link from "next/link";
 import { SignedIn, SignedOut, useClerk, useUser } from "@clerk/nextjs";
-import { useRouter } from "next/router";
 import UserProfile from "./ui/UserProfile";
 import RegisterModal from "./ui/RegisterModal";
+import LoginModal from "./ui/LoginModal";
 
 const useStyles = createStyles((theme) => ({
   header: {
@@ -128,9 +128,10 @@ export function Header({ tabs }: HeaderTabsProps) {
   const [opened, { toggle }] = useDisclosure(false);
   const [ProfileOpened, ProfileHandler] = useDisclosure(false);
   const [userMenuOpened, setUserMenuOpened] = useState(false);
+
+  const [loginmodal, setLoginModal] = useState(false);
   const [registerModal, setRegisterModal] = useState(false);
   const signOut = useClerk().signOut;
-  const router = useRouter();
   const { user } = useUser();
 
 
@@ -245,7 +246,7 @@ export function Header({ tabs }: HeaderTabsProps) {
             <Group position="right">
               <Button
                 variant="default"
-                onClick={() => void router.push("/sign-in")}
+                onClick={() => setLoginModal(true)}
               >
                 Log in
               </Button>
@@ -256,6 +257,7 @@ export function Header({ tabs }: HeaderTabsProps) {
           </SignedOut>
         </Group>
       </Container>
+      <LoginModal opened={loginmodal} close={() => setLoginModal(false)} />
       <RegisterModal opened={registerModal} close={() => setRegisterModal(false)} />
       <UserProfile opened={ProfileOpened} close={ProfileHandler.close} />
     </div>
