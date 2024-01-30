@@ -45,7 +45,7 @@
     "react-dom": "18.2.0",
     "superjson": "1.12.2",
     "tabler-icons-react": "^1.56.0",
-    "zod": "^3.21.4"
+    "zod": "^3.22.3"
   },
   "devDependencies": {
     "@types/eslint": "^8.21.3",
